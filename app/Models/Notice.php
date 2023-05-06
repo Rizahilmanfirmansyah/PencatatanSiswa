@@ -10,6 +10,6 @@ class Notice extends Model
     use HasFactory;
     protected $table = "tb_notice";
     protected $fillable = [
-        'judul', 'deskripsi'
+        'judul', 'deskripsi', 'foto'
     ];
 }

@@ -10,6 +10,6 @@ class m_pelanggaran extends Model
     use HasFactory;
     protected $table = 'tb_pelanggaran';
     protected $fillable = [
-        'nama', 'bentuk_pelanggaran', 
+        'nama','kelas', 'bentuk_pelanggaran' 
     ];
 }

@@ -16,7 +16,7 @@ class PelanggaranSiswaController extends Controller
     public function index()
     {
         $pelanggarans = m_pelanggaran::all();
-        return view('PelanggaranSIswa.index', compact('pelanggarans'));
+        return view('PelanggaranSiswa.index', compact('pelanggarans'));
     }
 
     /**

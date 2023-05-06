@@ -14,7 +14,8 @@ class PengumumanController extends Controller
      */
     public function index()
     {
-        return view('Pengumuman.index');
+        $notice = Notice::all();
+        return view('Pengumuman.index', compact('notice'));
     }
 
     /**
@@ -40,7 +41,11 @@ class PengumumanController extends Controller
             'deskripsi' => 'required'
         ]);
 
+        $image = $request->file('foto');
+        $image->storeAs('public/fotos', $image->hashName());
+
         $pengumuman = Notice::create([
+            'foto'=>$image->hashName(),
             'judul'=>$request->judul,
             'deskripsi'=>$request->deskripsi,
         ]);
@@ -57,7 +62,7 @@ class PengumumanController extends Controller
     public function show($id)
     {
         $notice = Notice::where('id', $id)->first();
-        return view('pengumuman.detail', compact());
+        return view('pengumuman.detail', compact($notice));
     }
 
     /**
@@ -88,10 +93,27 @@ class PengumumanController extends Controller
 
         $notice = Notice::where('id', $id)->first();
 
-        $notice->update([
-            'judul'=>$request->judul,
-            'deskripsi'=>$request->deskripsi
-        ]);
+        if ($request->file('foto') == "") {
+            # code...
+            $notice->update([
+                'judul'=>$request->judul,
+                'deskripsi'=>$request->deskripsi
+            ]);
+            
+        }else{
+            Storage::disk('local')->delete('public/fotos'.$notice->foto);
+
+            $image = $request->file('foto');
+            $image->storeAs('public/fotos', $image->hashName());
+
+            $notice->update([
+                'foto'=>$image->hashName(),
+                'judul'=>$request->judul,
+                'deskripsi'=>$request->deskripsi
+            ]);
+
+        }
+
         session()->flash('success', 'Pengumuman Berhasil Di Update');
         return redirect('pengumuman.index');
     }
@@ -104,6 +126,10 @@ class PengumumanController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $notice = Notice::where('id', $id)->first();
+        $notice->delete();
+        session()->flash('success', 'Pengumuman Berhasil Di Hapus');
+        return redirect()->route('pengumuman.index');
     }
+
 }
